@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Organization.Class
 {
-    class ImageExtension
+    internal class ImageExtension
     {
         /// <summary>
         /// Загрузить Bitmap по указанному пути и преобразовать в соотвествтие с указанными размерами.

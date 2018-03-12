@@ -44,31 +44,31 @@ namespace Organization
     {
         protected override void SetNameTable()
         {
-            Table.TableName = "Employee";
+            Table.TableName = Data.TableName.Employee;
         }
 
         protected override void CreateColumns()
         {
-            Table.Columns.Add("ID",typeof(int))
+            Table.Columns.Add(Data.ColumnName.ID,typeof(int))
                 .Caption = String.Empty;
-            Table.Columns.Add("Photo", typeof(Image))
+            Table.Columns.Add(Data.ColumnName.Photo, typeof(Image))
                 .Caption = String.Empty;
-            Table.Columns.Add("Surname", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Surname, typeof(string))
                 .Caption = "Фамилия";
-            Table.Columns.Add("Name", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Name, typeof(string))
                 .Caption = "Имя";
-            Table.Columns.Add("Patronymic", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Patronymic, typeof(string))
                 .Caption = "Отчество";
-            Table.Columns.Add("Gender", typeof(Gender.GenderEnum))
+            Table.Columns.Add(Data.ColumnName.Gender, typeof(Gender.Gender))
                 .Caption = "Пол";
-            Table.Columns.Add("DateOfBirth", typeof(DateTime))
+            Table.Columns.Add(Data.ColumnName.DateOfBirth, typeof(DateTime))
                 .Caption = "Дата рождения";
         }
 
         protected override void FillData()
         {
-            Gender.GenderEnum female = Gender.GenderEnum.Female;
-            Gender.GenderEnum male = Gender.GenderEnum.Male;
+            Gender.Gender female = Gender.Gender.Female;
+            Gender.Gender male = Gender.Gender.Male;
             Table.Rows.Add(1, null, "Белозерова", "Милена", "Григорьевна", female, Convert.ToDateTime("08.08.1994"));
             Table.Rows.Add(2, null, "Рзаева", "Тамара", "Антоновна", female, Convert.ToDateTime("16.03.1981"));
             Table.Rows.Add(3, null, "Охота", "Рада", "Яковлевна", female, Convert.ToDateTime("14.08.1972"));
@@ -85,8 +85,8 @@ namespace Organization
             {
                 for (int i = 0; i < Table.Rows.Count; i++)
                 {
-                    Table.Rows[i]["Photo"] 
-                        = Class.ImageExtension.GetBitmapFromPath($"{path}\\{Table.Rows[i]["ID"]}.png",150,150); 
+                    Table.Rows[i][Data.ColumnName.Photo]
+                        = Class.ImageExtension.GetBitmapFromPath($"{path}\\{Table.Rows[i][Data.ColumnName.ID]}.png",150,150); 
                 }
             }
         }
@@ -96,14 +96,14 @@ namespace Organization
     {
         protected override void SetNameTable()
         {
-            Table.TableName = "Department";
+            Table.TableName = Data.TableName.Department;
         }
 
         protected override void CreateColumns()
         {
-            Table.Columns.Add("ID", typeof(int))
+            Table.Columns.Add(Data.ColumnName.ID, typeof(int))
                 .Caption = String.Empty;
-            Table.Columns.Add("Name", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Name, typeof(string))
                 .Caption = "Отдел";
         }
 
@@ -119,14 +119,14 @@ namespace Organization
     {
         protected override void SetNameTable()
         {
-            Table.TableName = "EmployeeStatus";
+            Table.TableName = Data.TableName.EmployeeStatus;
         }
 
         protected override void CreateColumns()
         {
-            Table.Columns.Add("ID", typeof(int))
+            Table.Columns.Add(Data.ColumnName.ID, typeof(int))
                 .Caption = String.Empty;
-            Table.Columns.Add("Name", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Name, typeof(string))
                 .Caption = "Статус сотрудника";
         }
 
@@ -143,24 +143,24 @@ namespace Organization
     {
         protected override void SetNameTable()
         {
-            Table.TableName = "Relation";
+            Table.TableName = Data.TableName.Relation;
         }
 
         protected override void CreateColumns()
         {
-            Table.Columns.Add("ID", typeof(int))
-                .Caption = String.Empty; ;
-            Table.Columns.Add("EmployeeID", typeof(int))
+            Table.Columns.Add(Data.ColumnName.ID, typeof(int))
                 .Caption = String.Empty;
-            Table.Columns.Add("DepartmentID", typeof(int))
+            Table.Columns.Add(Data.ColumnName.EmployeeID, typeof(int))
                 .Caption = String.Empty;
-            Table.Columns.Add("DateOfHiring", typeof(DateTime))
+            Table.Columns.Add(Data.ColumnName.DepartmentID, typeof(int))
+                .Caption = String.Empty;
+            Table.Columns.Add(Data.ColumnName.DateOfHiring, typeof(DateTime))
                 .Caption = "Дата найма";
-            Table.Columns.Add("Position", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Position, typeof(string))
                 .Caption = "Должность";
-            Table.Columns.Add("DateOfDismissal", typeof(DateTime))
+            Table.Columns.Add(Data.ColumnName.DateOfDismissal, typeof(DateTime))
                 .Caption = "Дата увольнения";
-            Table.Columns.Add("StatusID", typeof(int))
+            Table.Columns.Add(Data.ColumnName.StatusID, typeof(int))
                 .Caption = String.Empty; ;
         }
 
@@ -186,37 +186,41 @@ namespace Organization
 
         protected override void SetNameTable()
         {
-            Table.TableName = "AfterRelation";
+            Table.TableName = Data.TableName.AfterRelation;
         }
 
         protected override void CreateColumns()
         {
-            Table.Columns.Add("EmployeeID", typeof(int))
+            Table.Columns.Add(Data.ColumnName.EmployeeID, typeof(int))
                 .Caption = String.Empty;
-            Table.Columns.Add("Photo", typeof(Image))
+            Table.Columns.Add(Data.ColumnName.Photo, typeof(Image))
                 .Caption = "Фото";
-            Table.Columns.Add("Surname", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Surname, typeof(string))
                 .Caption = "Фамилия";
-            Table.Columns.Add("Name", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Name, typeof(string))
                 .Caption = "Имя";
-            Table.Columns.Add("Patronymic", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Patronymic,typeof(string))
                 .Caption = "Отчество" ;
-            Table.Columns.Add("Gender", typeof(char))
+            Table.Columns.Add(Data.ColumnName.Gender, typeof(string))
+                .Caption = "Пол";
+            Table.Columns.Add(Data.ColumnName.DateOfBirth, typeof(DateTime))
                 .Caption = "Дата рождения";
-            Table.Columns.Add("DateOfBirth", typeof(DateTime))
-                .Caption = "Дата рождения";
-            Table.Columns.Add("DepartmentID", typeof(int))
+            Table.Columns.Add(Data.ColumnName.DepartmentID, typeof(int))
                 .Caption = String.Empty;
-            Table.Columns.Add("DepartmentName", typeof(string))
+            Table.Columns.Add(Data.ColumnName.DepartmentName, typeof(string))
                 .Caption = "Отдел";
-            Table.Columns.Add("EmployeeStatusID", typeof(int))
-                .Caption = String.Empty; ;
-            Table.Columns.Add("EmployeeStatusName", typeof(string))
+            Table.Columns.Add(Data.ColumnName.Position, typeof(string))
+                .Caption = "Должность";
+            Table.Columns.Add(Data.ColumnName.DateOfDismissal, typeof(DateTime))
+                .Caption = "Дата увольнения";
+            Table.Columns.Add(Data.ColumnName.EmployeeStatusID, typeof(int))
+                .Caption = String.Empty; 
+            Table.Columns.Add(Data.ColumnName.EmployeeStatusName, typeof(string))
                 .Caption = "Статус сотрудника";
-            Table.Columns.Add("DateOfHiring", typeof(DateTime))
+            Table.Columns.Add(Data.ColumnName.DateOfHiring, typeof(DateTime))
                 .Caption = "Дата найма";
-            Table.Columns.Add("TableInfo", typeof(string))
-                .Caption = "Полная информация";
+            Table.Columns.Add(Data.ColumnName.TableInfo, typeof(string))
+                .Caption = "Полная информация о сотруднике";
         }
     }
 }

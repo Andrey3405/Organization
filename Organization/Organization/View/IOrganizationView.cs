@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Organization.Organization.View
 {
-    interface IOrganizationView
+    public interface IOrganizationView
     {
         Interface.IOrgToolStripComboBox CBEmployeeStatus { get; }
-        Interface.IOrgDataGridView DGVOrgDataGridView { get; }
-
+        Interface.IOrgDataGridView DGVRelation { get; }
+        Interface.IOrgToolButton BtnTableMode { get; }
         event EventHandler Load;
     }
 }

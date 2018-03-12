@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Organization.Class
 {
     //Класс для доступа к созданным таблицам (имитация выборки с сервера)
-    class Tables
+    internal class Tables
     {
         public DataTable EmployeeTable{ get; private set; }
         public DataTable DepartmentTable { get; private set; }

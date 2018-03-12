@@ -12,6 +12,7 @@ namespace Organization.Organization.Presenter
         private Model.OrganizationModel model;
         private View.IOrganizationView view;
         private Class.Tables tables;
+        private DataTable tableForDGV;
 
         public OrganizationPresenter(View.IOrganizationView _view)
         {
@@ -19,54 +20,122 @@ namespace Organization.Organization.Presenter
             view = _view;
 
             tables = model.GetTables();
-            Dictionary<int, string> employeeStatusDictionary 
-                = model.GetDictionaryEmployeeStatus(tables.EmployeeStatus);
 
             Dictionary<int, string> dictionary
                 = model.GetDictionaryEmployeeStatus(tables.EmployeeStatus);
             view.CBEmployeeStatus.SetItems(dictionary);
+            
+
+            DataSet dataSet = model.CreateDataSet(tables.DepartmentTable
+                                                ,tables.EmployeeStatus
+                                                ,tables.EmployeeTable
+                                                ,tables.RelationTable);
+
+
+            tableForDGV = CreateTable.Create(new AfterRelationTableCreator());
+            model.CreateRelationForDataSet(dataSet);
+            model.GetTableAfterRelation(dataSet, tableForDGV);
+            view.DGVRelation.DataSource = tableForDGV;
+
             view.Load += OnForm_Load;
+            view.BtnTableMode.CheckedChanged += OnButtonTableMode_CheckedChanged;
+            OnButtonTableMode_CheckedChanged(new object(), EventArgs.Empty);
+        }
 
-            DataSet dataSet = new DataSet();
-            dataSet.Tables.Add(tables.DepartmentTable);
-            dataSet.Tables.Add(tables.EmployeeStatus);
-            dataSet.Tables.Add(tables.EmployeeTable);
-            dataSet.Tables.Add(tables.RelationTable);
-
-            view.DGVOrgDataGridView.DataSource = tables.EmployeeTable;
-
-            DataTable table = new DataTable();
-            dataSet.Relations.Add("RelationDepartment", dataSet.Tables["Relation"].Columns["DepartmentID"]
-                , dataSet.Tables["Department"].Columns["ID"],false);
-            dataSet.Relations.Add("RelationEmployee", dataSet.Tables["Relation"].Columns["EmployeeID"]
-                , dataSet.Tables["Employee"].Columns["ID"], false);
-            dataSet.Relations.Add("RelationStatus", dataSet.Tables["Relation"].Columns["StatusID"]
-                , dataSet.Tables["EmployeeStatus"].Columns["ID"], false);
-            foreach (DataRow row in dataSet.Tables["Relation"].Rows)
+        private void OnButtonTableMode_CheckedChanged(object sender,EventArgs e)
+        {
+            if (view.BtnTableMode.Checked)
             {
-                //Console.WriteLine(row["Position"].ToString());
-                string employee = string.Empty;
-                string department = string.Empty;
-                string status = string.Empty;
-                string positiob = string.Empty;
-                Console.WriteLine();
-                foreach (DataRow employeeRow in row.GetChildRows(dataSet.Relations["RelationEmployee"]))
-                {
-                    Console.Write(employeeRow["Surname"] + " " + employeeRow["Name"] + " " + employeeRow["Patronymic"]+" ");
-                }
-
-                foreach(DataRow departmentRow in row.GetChildRows(dataSet.Relations["RelationDepartment"]))
-                {
-                    Console.Write(departmentRow["Name"]+" ");
-                }
-
-                foreach(DataRow statusRow in row.GetChildRows(dataSet.Relations["RelationStatus"]))
-                {
-                    Console.Write(statusRow["Name"] + " ");
-                }
+                SetTableMode();
             }
+            else
+            {
+                GetInfo();
+                SetInfoMode();
+            }
+        }
 
-            //view.DGVOrgDataGridView.DataSource = ta;
+        /// <summary>
+        /// Получить полную информацию о сотруднике и записать ее в ячейку 
+        /// </summary>
+        private void GetInfo()
+        {
+            for (int rowIndex = 0; rowIndex < tableForDGV.Rows.Count; rowIndex++)
+            {
+                //Записать ФИО
+                string employee 
+                    = $"{tableForDGV.Rows[rowIndex][Data.ColumnName.Surname]} " +
+                      $"{tableForDGV.Rows[rowIndex][Data.ColumnName.Name]} " +
+                      $"{tableForDGV.Rows[rowIndex][Data.ColumnName.Patronymic]}";
+
+                string dateOfBirth
+                    = Convert.ToDateTime(tableForDGV.Rows[rowIndex][Data.ColumnName.DateOfBirth]).ToShortDateString();
+                string dateOfDismissal = String.Empty;
+
+                if (!String.IsNullOrEmpty(tableForDGV.Rows[rowIndex][Data.ColumnName.DateOfDismissal].ToString()))
+                {
+                    dateOfDismissal
+                        = Convert.ToDateTime(tableForDGV.Rows[rowIndex][Data.ColumnName.DateOfDismissal]).ToShortDateString();
+                }
+
+                string dateOfHiring
+                    = Convert.ToDateTime(tableForDGV.Rows[rowIndex][Data.ColumnName.DateOfHiring]).ToShortDateString();
+
+                //Записать полную информацию в ячейку
+                tableForDGV.Rows[rowIndex][Data.ColumnName.TableInfo]
+                    = $"Сотрудник: {employee} {Environment.NewLine}" +
+                      $"Пол: {tableForDGV.Rows[rowIndex][Data.ColumnName.Gender]} {Environment.NewLine}" +
+                      $"Дата рождения: {dateOfBirth} {Environment.NewLine}" +
+                      $"Отдел: {tableForDGV.Rows[rowIndex][Data.ColumnName.DepartmentName]} {Environment.NewLine}" +
+                      $"Статус сотрудника: {tableForDGV.Rows[rowIndex][Data.ColumnName.EmployeeStatusName]} {Environment.NewLine}"  +
+                      $"Дата найма: {dateOfHiring} {Environment.NewLine}" +
+                      $"Дата увольнения: {dateOfDismissal} {Environment.NewLine}";
+            }
+        }
+
+        /// <summary>
+        /// Установить видимость столбцов в соответствение с табличным видом
+        /// </summary>
+        private void SetTableMode()
+        {
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.EmployeeID, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DepartmentID, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.EmployeeStatusID, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.TableInfo, false);            
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Photo, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Surname, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Name, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Patronymic, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Gender, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfBirth, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DepartmentName, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.EmployeeStatusName, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfHiring, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfDismissal, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Position, true);
+        }
+
+        /// <summary>
+        /// Установить видимость столбцов в соответствение с компактным видом
+        /// </summary>
+        private void SetInfoMode()
+        {
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.EmployeeID, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DepartmentID, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.EmployeeStatusID, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.TableInfo, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Photo, true);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Surname, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Name, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Patronymic, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Gender, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfBirth, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DepartmentName, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.EmployeeStatusName, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfHiring, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfBirth, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfDismissal, false);
+            view.DGVRelation.SetColumnVisibility(Data.ColumnName.Position, false);
         }
 
         private void OnForm_Load(object sender, EventArgs e)

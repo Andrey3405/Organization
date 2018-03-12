@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace Organization.Class
 {
-    class OrgDataGridView : Interface.IOrgDataGridView
+    internal class OrgDataGridView : Interface.IOrgDataGridView
     {
         private DataGridView dataGridView;
 
@@ -35,6 +35,16 @@ namespace Organization.Class
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Установить видимость столбца
+        /// </summary>
+        /// <param name="columnName">Название столбца</param>
+        /// <param name="visibility">Видимость столбца</param>
+        public void SetColumnVisibility(string columnName, bool visibility )
+        {
+            dataGridView.Columns[columnName].Visible = visibility;
         }
 
         public OrgDataGridView(DataGridView _dataGridView)

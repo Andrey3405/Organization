@@ -1,6 +1,6 @@
 ﻿namespace Organization.Gender
 {
-    public enum GenderEnum
+    internal enum Gender
     {
         Undefined = -1,
         Female = 0,

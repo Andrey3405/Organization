@@ -10,5 +10,6 @@ namespace Organization.Interface
     public interface IOrgDataGridView
     {
         DataTable DataSource { get; set; }
+        void SetColumnVisibility(string columnName, bool visibility);
     }
 }

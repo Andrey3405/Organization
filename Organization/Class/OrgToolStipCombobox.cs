@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Organization.Class
 {
-    class OrgToolStipCombobox : Interface.IOrgToolStripComboBox
+    internal class OrgToolStipCombobox : Interface.IOrgToolStripComboBox
     {
         public event EventHandler<EventArgs> SelectedItemChanged;
 
@@ -23,7 +23,7 @@ namespace Organization.Class
             toolStripComboBox = _toolStripComboBox;
             model = new Organization.Model.OrganizationModel();
             bindingSource = new System.Windows.Forms.BindingSource();
-            bindingSource.DataSource = new Dictionary<int, string>() { { 0, model.RecordAll} };
+            bindingSource.DataSource = new Dictionary<int, string>() { { 0, Organization.Model.OrganizationModel.RecordAll} };
             toolStripComboBox.ComboBox.DataSource = bindingSource;            
             toolStripComboBox.ComboBox.DisplayMember = "Value";
             toolStripComboBox.ComboBox.ValueMember = "Key";

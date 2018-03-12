@@ -47,10 +47,15 @@
   <ItemGroup>
     <Compile Include="Class\ImageExtension.cs" />
     <Compile Include="Class\OrgDataGridView.cs" />
+    <Compile Include="Class\OrgToolButton.cs" />
     <Compile Include="Class\OrgToolStipCombobox.cs" />
     <Compile Include="Data\Gender.cs" />
+    <Compile Include="Data\RelationName.cs" />
     <Compile Include="Data\TableCreator.cs" />
+    <Compile Include="Data\ColumnName.cs" />
+    <Compile Include="Data\TableName.cs" />
     <Compile Include="Interface\IOrgDataGridView.cs" />
+    <Compile Include="Interface\IOrgToolButton.cs" />
     <Compile Include="Interface\IOrgToolStripComboBox.cs" />
     <Compile Include="Organization\FmOrganization.cs">
       <SubType>Form</SubType>
