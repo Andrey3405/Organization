@@ -20,6 +20,7 @@ namespace Organization.Class
                 dataGridView.DataSource = value;
                 for(int i=0;i<dataGridView.Columns.Count;i++)
                 {
+                    Console.WriteLine(value.Columns[i].Caption);
                     dataGridView.Columns[i].HeaderText
                         = value.Columns[i].Caption;
                     if (dataGridView.Columns[i].GetType()

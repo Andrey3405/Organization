@@ -27,31 +27,23 @@ namespace Organization.Class
             toolStripComboBox.ComboBox.DataSource = bindingSource;            
             toolStripComboBox.ComboBox.DisplayMember = "Value";
             toolStripComboBox.ComboBox.ValueMember = "Key";
+
+            toolStripComboBox.SelectedIndexChanged += OnSelectedIndexChanged;
         }
 
-        public string GetSelectedItemText()
+        private void OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            return toolStripComboBox.ComboBox.SelectedText;
+            SelectedItemChanged?.Invoke(sender, e);
         }
 
         public object GetSelectedItemValue()
         {
-            throw new NotImplementedException();
+            return (((KeyValuePair<int, string>)toolStripComboBox.ComboBox.SelectedItem).Key);
         }
 
         public void SetItems(Dictionary<int, string> items)
         {
             bindingSource.DataSource = items;
-        }
-
-        public void SetSelectedItem(int value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetSelectedItem(string text)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -37,9 +37,25 @@ namespace Organization.Organization.Presenter
             model.GetTableAfterRelation(dataSet, tableForDGV);
             view.DGVRelation.DataSource = tableForDGV;
 
-            view.Load += OnForm_Load;
             view.BtnTableMode.CheckedChanged += OnButtonTableMode_CheckedChanged;
+            view.CBEmployeeStatus.SelectedItemChanged += OnComboboxStatusEmployee_SelectedIndexChanged;
             OnButtonTableMode_CheckedChanged(new object(), EventArgs.Empty);
+            
+        }
+
+        private void OnComboboxStatusEmployee_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string queryString = String.Empty;
+            if ((int)view.CBEmployeeStatus.GetSelectedItemValue() != -1)
+                queryString = $"EmployeeStatusID = {view.CBEmployeeStatus.GetSelectedItemValue()}";
+            DataTable tableSelect = tableForDGV.Select(queryString).CopyToDataTable();
+            for (int indexColumn = 0; indexColumn < tableSelect.Columns.Count; indexColumn++)
+            {
+                Console.WriteLine(tableForDGV.Columns[indexColumn].Caption + " " + tableForDGV.Columns[indexColumn].Caption);
+                tableSelect.Columns[indexColumn].Caption
+                    = tableForDGV.Columns[indexColumn].Caption;
+            }
+            view.DGVRelation.DataSource = tableSelect;
         }
 
         private void OnButtonTableMode_CheckedChanged(object sender,EventArgs e)
@@ -136,11 +152,6 @@ namespace Organization.Organization.Presenter
             view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfBirth, false);
             view.DGVRelation.SetColumnVisibility(Data.ColumnName.DateOfDismissal, false);
             view.DGVRelation.SetColumnVisibility(Data.ColumnName.Position, false);
-        }
-
-        private void OnForm_Load(object sender, EventArgs e)
-        {
-            
         }
     }
 }

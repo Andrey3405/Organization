@@ -13,9 +13,6 @@ namespace Organization.Interface
         bool Active { get; set; }
 
         void SetItems(Dictionary<int, string> items);
-        string GetSelectedItemText();
         object GetSelectedItemValue();
-        void SetSelectedItem(int value);
-        void SetSelectedItem(string text);
     }
 }
